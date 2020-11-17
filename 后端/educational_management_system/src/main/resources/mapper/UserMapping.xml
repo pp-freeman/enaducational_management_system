@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pp.educational_management_system.dao.IUserDao">
+    <select id="getUserByMessage" resultType="com.pp.educational_management_system.domain.User">
+        select * from user where
+        username =#{username} and password = #{password}
+    </select>
+
+
+    <select id="getUserByName" resultType="com.pp.educational_management_system.domain.User">
+        select * from user where username =#{username}
+    </select>
+
+    <select id="findUserById" resultType="com.pp.educational_management_system.domain.User">
+        select * from user where id=#{userId}
+    </select>
+
+    <resultMap id="UserRoleRst" type="com.pp.educational_management_system.domain.User">
+        <id column="id" property="id"></id>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <result column="state" property="state"></result>
+        <collection property="roles" ofType="com.pp.educational_management_system.domain.Role">
+            <id column="roleId" property="id"></id>
+            <result column="roleName" property="roleName"></result>
+            <result column="roleDesc" property="roleDesc"></result>
+        </collection>
+    </resultMap>
+
+    <select id="getAllUser" resultMap="UserRoleRst">
+        select `user`.id id,username,password,
+        state,roleId,roleName,roleDesc from user left join
+        user_role on user_role.userId = `user`.id left join role on user_role.roleId = role.id
+        <where>
+            <if test="username!=null and username!=''">
+                and username like concat('%',#{username},'%')
+            </if>
+            <if test="roleName!=null and roleName!=''">
+                and roleName = #{roleName}
+            </if>
+        </where>
+        limit #{pageStart},#{pageSize}
+    </select>
+
+
+    <select id="getAllUserCount" resultType="int">
+        select count(*) from user left join
+        user_role on user_role.userId = `user`.id left join role on user_role.roleId = role.id
+        <where>
+            <if test="username!=null and username!=''">
+                and username like concat('%',#{username},'%')
+            </if>
+            <if test="roleName!=null and roleName!=''">
+                and roleName = #{roleName}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateUserState">
+        update user set state=#{state} where id=#{id};
+    </update>
+
+    <insert id="addUser">
+        insert into user values (#{id},#{username},#{password},1);
+    </insert>
+
+    <delete id="deleteUser">
+        delete from user where id=#{id};
+    </delete>
+
+    <select id="getUpdateUser" resultType="com.pp.educational_management_system.domain.User">
+        select * from user where id=#{id};
+    </select>
+
+    <update id="editUser" parameterType="com.pp.educational_management_system.domain.User">
+        update user set username=#{username},password=#{password} where id=#{id};
+    </update>
+</mapper>

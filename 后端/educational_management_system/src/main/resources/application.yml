@@ -1,0 +1,21 @@
+#mysql
+#spring:
+#  datasource:
+#    driverClassName: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/education_manage?serverTimezone=GMT%2B8
+#    username: root
+#    password: 658001
+#
+db:
+  driverClassName: com.mysql.cj.jdbc.Driver
+  url: amRiYzpteXNxbDovL2xvY2FsaG9zdDozMzA2L2VkdWNhdGlvbl9tYW5hZ2U/c2VydmVyVGltZXpvbmU9R01UJTJCOA==
+  username: cm9vdA==
+  password: NjU4MDAx
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.demo.model
+
+server:
+  port: 9000

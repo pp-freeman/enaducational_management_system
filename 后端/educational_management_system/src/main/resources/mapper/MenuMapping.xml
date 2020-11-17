@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pp.educational_management_system.dao.IMenuDao" >
+    <resultMap id="menuFind" type="com.pp.educational_management_system.domain.Menu">
+        <id column="id" property="id"></id>
+        <result column="name" property="title"></result>
+        <result column="url" property="path"></result>
+        <collection property="menuList" ofType="com.pp.educational_management_system.domain.SubMenu">
+            <id column="pid" property="id"></id>
+            <result column="pname" property="title"></result>
+            <result column="purl" property="path"></result>
+        </collection>
+    </resultMap>
+    <select id="findMenus" parameterType="java.lang.String" resultMap="menuFind">
+        select permission.id id,permission.permissionName name,permission.url url,
+        permission_child.id pid,permission_child.permissionName pname,permission_child.url purl from
+        permission,permission_child where permission.id = permission_child.parent and permission.id in(
+        select permission.id  FROM  user,role,permission,role_permission,user_role
+        where user.id=user_role.userId and user_role.roleId=role.id
+        and role.id = role_permission.roleId and role_permission.permissionId = permission_child.id and user.id = #{id});
+    </select>
+</mapper>

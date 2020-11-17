@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pp.educational_management_system.dao.IRoleDao">
+    <resultMap id="RoleRst" type="com.pp.educational_management_system.domain.Role">
+        <id column="id" property="id"></id>
+        <result column="roleName" property="roleName"></result>
+        <result column="roleDesc" property="roleDesc"></result>
+        <collection property="permissions" ofType="com.pp.educational_management_system.domain.Permission">
+            <id column="permissionId" property="id"></id>
+            <result column="permissionName" property="permissionName"></result>
+            <result column="permissionUrl" property="url"></result>
+            <collection property="permissionChildren" ofType="com.pp.educational_management_system.domain.PermissionChild">
+                <id column="permissionChildId" property="id"></id>
+                <result column="permissionChildName" property="permissionName"></result>
+                <result column="permissionChildUrl" property="url"></result>
+                <collection property="permissionButtons" ofType="com.pp.educational_management_system.domain.PermissionButton">
+                    <id column="permissionButtonId" property="id"></id>
+                    <result column="permissionButtonName" property="permissionName"></result>
+                    <result column="permissionButtonUrl" property="url"></result>
+                </collection>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="getRoleList" resultMap="RoleRst">
+        select role.id id,roleName,roleDesc,permission.id permissionId,
+        permission.permissionName permissionName,permission.url permissionUrl,
+        permission_child.id permissionChildId,permission_child.permissionName permissionChildName,
+        permission_child.url permissionChildUrl
+        from role LEFT JOIN role_permission on role.id=role_permission.roleId
+        LEFT JOIN permission_child on permission_child.id=role_permission.permissionId left join permission
+        on permission.id=permission_child.parent
+    </select>
+    <resultMap id="getPermissionRst" type="com.pp.educational_management_system.domain.PermissionChild">
+        <id column="permissionChildId" property="id"></id>
+        <result column="permissionChildName" property="permissionName"></result>
+        <result column="permissionChildUrl" property="url"></result>
+        <collection property="permissionButtons" ofType="com.pp.educational_management_system.domain.PermissionButton">
+            <id column="permissionButtonId" property="id"></id>
+            <result column="permissionButtonName" property="permissionName"></result>
+            <result column="permissionButtonUrl" property="url"></result>
+        </collection>
+    </resultMap>
+
+    <select id="getPermissionList" resultMap="getPermissionRst">
+        select  permission_child.id permissionChildId,permission_child.permissionName
+        permissionChildName,permission_child.url permissionChildUrl,
+				permission_button.id permissionbuttonId,permission_button.permissionName
+        permissionbuttonName,permission_button.url permissionbuttonUrl
+        from role left join role_button on role.id=role_button.roleId left join
+				permission_button on permission_button.id = role_button.buttonId
+				 left join permission_child
+        on permission_button.parent=permission_child.id
+        where role.id=#{id}
+    </select>
+
+    <resultMap id="AllRoleListRst" type="com.pp.educational_management_system.domain.Permission">
+        <id column="permissionId" property="id"></id>
+        <result column="permissionName" property="permissionName"></result>
+        <result column="permissionUrl" property="url"></result>
+        <collection property="permissionChildren" ofType="com.pp.educational_management_system.domain.PermissionChild">
+            <id column="permissionChildId" property="id"></id>
+            <result column="permissionChildName" property="permissionName"></result>
+            <result column="permissionChildUrl" property="url"></result>
+            <collection property="permissionButtons" ofType="com.pp.educational_management_system.domain.PermissionButton">
+                <id column="permissionButtonId" property="id"></id>
+                <result column="permissionButtonName" property="permissionName"></result>
+                <result column="permissionButtonUrl" property="url"></result>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="getAllRoleList" resultMap="AllRoleListRst">
+         select permission.id permissionId,
+        permission.permissionName permissionName,permission.url permissionUrl,
+        permission_child.id permissionChildId,permission_child.permissionName
+        permissionChildName,
+        permission_child.url permissionChildUrl,permission_button.id permissionbuttonId,permission_button.permissionName
+        permissionbuttonName,permission_button.url permissionbuttonUrl
+        from permission_child left join permission
+        on permission.id=permission_child.parent
+				left join permission_button on permission_button.parent = permission_child.id
+    </select>
+
+    <resultMap id="permissionRst" type="com.pp.educational_management_system.domain.Permission">
+        <id column="permissionId" property="id"></id>
+        <result column="permissionName" property="permissionName"></result>
+        <result column="permissionUrl" property="url"></result>
+    </resultMap>
+    <select id="getAllPermission" resultMap="permissionRst">
+        select * from permission
+    </select>
+
+    <resultMap id="permissionChildRst" type="com.pp.educational_management_system.domain.PermissionChild">
+        <id column="id" property="id"></id>
+        <result column="permissionName" property="permissionName"></result>
+        <result column="url" property="url"></result>
+    </resultMap>
+    <select id="getAllPermissionChild" resultMap="permissionChildRst">
+        select * from permission_child
+    </select>
+
+    <resultMap id="permissionButtonRst" type="com.pp.educational_management_system.domain.PermissionButton">
+        <id column="id" property="id"></id>
+        <result column="permissionName" property="permissionName"></result>
+        <result column="url" property="url"></result>
+    </resultMap>
+    <select id="getAllPermissionButton" resultMap="permissionButtonRst">
+        select * from permission_button
+    </select>
+
+    <delete id="deletePermissionChild">
+        delete from role_permission where roleId=#{id}
+    </delete>
+
+    <delete id="deletePermissionButton">
+        delete from role_button where roleId=#{id}
+    </delete>
+
+    <insert id="updatePermissionChild">
+        insert into role_permission(roleId,permissionId) select #{roleId},Id from permission_child where permissionName in
+        <foreach collection="idList" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </insert>
+
+    <insert id="updatePermissionButton">
+        insert into role_button(roleId,buttonId) select #{roleId},Id from permission_button where permissionName in
+        <foreach collection="idList" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </insert>
+
+    <select id="getAllRole" resultType="com.pp.educational_management_system.domain.Role">
+        select * from role
+    </select>
+
+    <delete id="deleteUserRole">
+        delete from user_role where userId=#{userId}
+    </delete>
+
+    <insert id="updateUserRole">
+        insert into user_role values (#{userId},#{roleId})
+    </insert>
+
+    <insert id="addRole" parameterType="com.pp.educational_management_system.domain.Role">
+        insert into role values (#{id},#{roleName},#{roleDesc})
+    </insert>
+
+    <select id="getUpdateRole" resultType="com.pp.educational_management_system.domain.Role">
+        select * from role where id=#{id}
+    </select>
+
+    <update id="updateRole" parameterType="com.pp.educational_management_system.domain.Role">
+        update role set roleName=#{roleName},roleDesc=#{roleDesc} where id=#{id}
+    </update>
+
+    <delete id="deleteRole">
+        delete from role where id=#{id}
+    </delete>
+
+</mapper>

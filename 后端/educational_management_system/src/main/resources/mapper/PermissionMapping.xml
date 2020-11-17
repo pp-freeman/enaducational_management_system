@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pp.educational_management_system.dao.IPermissionDao">
+    <select id="getAllPermission" resultType="com.pp.educational_management_system.domain.Permission">
+        select * from permission
+    </select>
+
+    <select id="getAllPermissionChild" resultType="com.pp.educational_management_system.domain.Permission">
+        select * from permission_child
+    </select>
+
+    <select id="getAllPermissionButton" resultType="com.pp.educational_management_system.domain.Permission">
+        select * from permission_button
+    </select>
+
+</mapper>

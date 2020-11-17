@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pp.educational_management_system.dao.IUserInfoDao">
+
+    <resultMap id="studentInfoRst" type="com.pp.educational_management_system.domain.StudentInfo">
+        <id column="id" property="id"></id>
+    </resultMap>
+    <resultMap id="teacherInfoRst" type="com.pp.educational_management_system.domain.TeacherInfo">
+        <id column="id" property="id"></id>
+    </resultMap>
+
+    <select id="getStudentInfoList" resultMap="studentInfoRst">
+        select * from student_info
+        <where>
+            <if test="number!=null and number!=''">
+                and snum like concat('%',#{number},'%')
+            </if>
+            <if test="username!=null and username!=''">
+                and sname like concat('%',#{username},'%')
+            </if>
+            <if test="department!=null and department!=''">
+                and sacademy = #{department}
+            </if>
+        </where>
+    </select>
+
+    <select id="getTeacherInfoList" resultMap="teacherInfoRst">
+        select * from teacher_info
+        <where>
+            <if test="number!=null and number!=''">
+                and tnum like concat('%',#{number},'%')
+            </if>
+            <if test="username!=null and username!=''">
+                and tname like concat('%',#{username},'%')
+            </if>
+            <if test="department!=null and department!=''">
+                and tdepartment = #{department}
+            </if>
+        </where>
+    </select>
+
+    <select id="getStudentInfoCount" resultType="int">
+        select count(*) from student_info
+        <where>
+            <if test="number!=null and number!=''">
+                and snum like concat('%',#{number},'%')
+            </if>
+            <if test="username!=null and username!=''">
+                and sname like concat('%',#{username},'%')
+            </if>
+            <if test="department!=null and department!=''">
+                and sacademy = #{department}
+            </if>
+        </where>
+    </select>
+
+    <select id="getTeacherInfoCount" resultType="int">
+        select count(*) from teacher_info
+        <where>
+            <if test="number!=null and number!=''">
+                and tnum like concat('%',#{number},'%')
+            </if>
+            <if test="username!=null and username!=''">
+                and tname like concat('%',#{username},'%')
+            </if>
+            <if test="department!=null and department!=''">
+                and tdepartment = #{department}
+            </if>
+        </where>
+    </select>
+</mapper>

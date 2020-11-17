@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pp.educational_management_system.dao.ISysTokenDao">
+
+    <resultMap id="tokenRst" type="com.pp.educational_management_system.domain.SysToken">
+        <id column="user_id" property="userId"></id>
+        <result column="expire_time" property="expireTime"></result>
+        <result column="token" property="token"></result>
+        <result column="update_time" property="updateTime"></result>
+    </resultMap>
+
+    <select id="findTokenByUserId" resultMap="tokenRst">
+        select * from sys_token where user_id = #{userId}
+    </select>
+
+    <insert id="save" parameterType="com.pp.educational_management_system.domain.SysToken">
+        insert into sys_token(user_id,expire_time,token,update_time) values
+        (#{userId},#{expireTime},#{token},#{updateTime})
+    </insert>
+
+    <update id="update" parameterType="com.pp.educational_management_system.domain.SysToken">
+        update sys_token set expire_time=#{expireTime},token=#{token},update_time=#{updateTime} where user_id=#{userId}
+    </update>
+
+    <select id="findByToken" resultMap="tokenRst">
+        select * from sys_token where token = #{accessToken}
+    </select>
+</mapper>

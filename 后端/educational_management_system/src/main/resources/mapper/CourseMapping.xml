@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pp.educational_management_system.dao.ICourseDao">
+    <select id="getAllGradeYear" resultType="String">
+        select distinct sgrade from student_info ORDER by sgrade desc
+    </select>
+    <select id="getAllAcademy" resultType="String">
+        select distinct sacademy from student_info
+    </select>
+    <select id="getAllSemester" resultType="com.pp.educational_management_system.domain.Semester">
+        select * from semester ORDER BY semesterno desc
+    </select>
+    <select id="getAllClass" resultType="String">
+        select DISTINCT sclass from student_info order by sclass
+    </select>
+    <insert id="addCourse" parameterType="com.pp.educational_management_system.domain.Course">
+        insert into course(coursecode,coursename,coursetype,begingrade,beginacademy,semester,execourses,tline,timeflag,spotflag,attendexpect,creadit,period,weeknum,atusum)
+        values (#{coursecode},#{coursename},#{coursetype},#{begingrade},#{beginacademy},#{semester},#{execourses},#{tline},#{timeflag},#{spotflag},#{attendexpect},#{creadit},#{period},#{weeknum},#{atusum})
+    </insert>
+
+    <select id="getClassCount" resultType="int">
+        select count(*) from student_info where sclass in
+        <foreach collection="idList" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getCourseList" resultType="com.pp.educational_management_system.domain.Course">
+        select * from Course
+        <where>
+            <if test="coursename!=null and coursename!=''">
+                and coursename like concat('%',#{coursename},'%')
+            </if>
+            <if test="coursetype!=null and coursetype!=''">
+                and coursetype = #{coursetype}
+            </if>
+            <if test="beginacademy!=null and beginacademy!=''">
+                and beginacademy = #{beginacademy}
+            </if>
+            <if test="begingrade!=null and begingrade!=''">
+                and begingrade = #{begingrade}
+            </if>
+        </where>
+        limit #{pageStart},#{pageSize}
+    </select>
+
+    <select id="getCourseCount" resultType="int">
+        select count(*) from Course
+        <where>
+            <if test="coursename!=null and coursename!=''">
+                and coursename like concat('%',#{coursename},'%')
+            </if>
+            <if test="coursetype!=null and coursetype!=''">
+                and coursetype = #{coursetype}
+            </if>
+            <if test="beginacademy!=null and beginacademy!=''">
+                and beginacademy = #{beginacademy}
+            </if>
+            <if test="begingrade!=null and begingrade!=''">
+                and begingrade = #{begingrade}
+            </if>
+        </where>
+    </select>
+</mapper>
